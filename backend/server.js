@@ -36,13 +36,14 @@ app.get('/users', (req, res) => {
 });
 
 // Route pour ajouter un utilisateur
-app.get('/users', (req, res) => {
-    db.all('SELECT * FROM users', [], (err, rows) => {
+app.post('/users', (req, res) => {
+    const { name, email } = req.body;
+    db.run('INSERT INTO users (name, email) VALUES (?, ?)', [name, email], function(err) {
         if (err) {
-            res.status(500).json({ error: err.message });
+            res.status(400).json({ error: err.message });
             return;
         }
-        res.json({ users: rows });
+        res.json({ id: this.lastID });
     });
 });
 
